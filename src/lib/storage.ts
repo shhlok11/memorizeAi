@@ -1,7 +1,11 @@
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
-const STORAGE_DIR = path.join(process.cwd(), "storage");
+const STORAGE_DIR =
+  process.env.STORAGE_DIR ??
+  ((process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME)
+    ? path.join(process.env.TMPDIR || "/tmp", "storage")
+    : path.join(process.cwd(), "storage"));
 
 export async function ensureStorageDir() {
   await mkdir(STORAGE_DIR, { recursive: true });
