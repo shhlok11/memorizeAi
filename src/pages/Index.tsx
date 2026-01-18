@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Sparkles, Loader2 } from "lucide-react";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -65,12 +66,15 @@ export default function Index() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2"
+            className="flex items-center justify-between"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-primary-foreground" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-semibold text-foreground">MemorizeAI</span>
             </div>
-            <span className="text-xl font-semibold text-foreground">MemorizeAI</span>
+            <ThemeToggle />
           </motion.div>
         </div>
       </header>
