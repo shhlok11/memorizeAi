@@ -4,7 +4,7 @@ import { chunkPages, loadPdfPages, type RawPage } from "@/lib/ingest";
 import { inngest } from "@/lib/inngest";
 import { prisma } from "@/lib/prisma";
 import { withRetries } from "@/lib/retry";
-import { storagePathForKey } from "@/lib/storage";
+import { getLocalPathForKey } from "@/lib/storage";
 import { toPgVector } from "@/lib/vector";
 
 export const ingestDocument = inngest.createFunction(
@@ -47,7 +47,7 @@ export const ingestDocument = inngest.createFunction(
         throw new Error("Document not found");
       }
 
-      const filePath = storagePathForKey(document.storageKey);
+      const filePath = await getLocalPathForKey(document.storageKey);
 
       const pages = await step.run("extract-pages", async () => {
         return loadPdfPages(filePath);
