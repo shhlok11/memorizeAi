@@ -1,6 +1,12 @@
 import { cn } from "@/lib/utils";
 
-export type JobStatus = "queued" | "extracting" | "summarizing" | "complete" | "failed";
+export type JobStatus =
+  | "queued"
+  | "extracting"
+  | "chunking"
+  | "embedding"
+  | "ready"
+  | "failed";
 
 interface StatusPillProps {
   status: JobStatus;
@@ -16,13 +22,17 @@ const statusConfig: Record<JobStatus, { label: string; className: string }> = {
     label: "Extracting",
     className: "status-extracting",
   },
-  summarizing: {
-    label: "Summarizing",
-    className: "status-summarizing",
+  chunking: {
+    label: "Chunking",
+    className: "status-chunking",
   },
-  complete: {
-    label: "Complete",
-    className: "status-complete",
+  embedding: {
+    label: "Embedding",
+    className: "status-embedding",
+  },
+  ready: {
+    label: "Ready",
+    className: "status-ready",
   },
   failed: {
     label: "Failed",

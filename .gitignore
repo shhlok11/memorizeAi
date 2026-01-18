@@ -11,12 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
-.next
-storage
 .env
 .env.*
+.next
+storage
 /generated
-.env
 
 # Editor directories and files
 .vscode/*
@@ -28,3 +27,5 @@ storage
 *.njsproj
 *.sln
 *.sw?
+
+/generated/prisma
