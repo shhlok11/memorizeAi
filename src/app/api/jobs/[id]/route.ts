@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
@@ -15,22 +14,18 @@ export async function GET(
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
 
-    const chunkCountResult = await prisma.$queryRaw<{ count: number }[]>(
-      Prisma.sql`
-        SELECT COUNT(*)::int AS count
-        FROM "Chunk"
-        WHERE "documentId" = ${job.documentId}
-      `
-    );
+    const chunkCountResult = await prisma.$queryRaw<{ count: number }[]>`
+      SELECT COUNT(*)::int AS count
+      FROM "Chunk"
+      WHERE "documentId" = ${job.documentId}
+    `;
 
-    const embeddedCountResult = await prisma.$queryRaw<{ count: number }[]>(
-      Prisma.sql`
-        SELECT COUNT(*)::int AS count
-        FROM "Chunk"
-        WHERE "documentId" = ${job.documentId}
-          AND "embedding" IS NOT NULL
-      `
-    );
+    const embeddedCountResult = await prisma.$queryRaw<{ count: number }[]>`
+      SELECT COUNT(*)::int AS count
+      FROM "Chunk"
+      WHERE "documentId" = ${job.documentId}
+        AND "embedding" IS NOT NULL
+    `;
 
     return NextResponse.json({
       id: job.id,
