@@ -25,7 +25,11 @@ export function storagePathForKey(storageKey: string) {
 
 export async function saveUploadedFile(storageKey: string, buffer: Buffer) {
   if (blobStore) {
-    await blobStore.set(storageKey, new Uint8Array(buffer));
+    const arrayBuffer = buffer.buffer.slice(
+      buffer.byteOffset,
+      buffer.byteOffset + buffer.byteLength
+    );
+    await blobStore.set(storageKey, arrayBuffer);
     return storageKey;
   }
   await ensureStorageDir();
