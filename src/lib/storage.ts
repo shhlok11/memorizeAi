@@ -8,8 +8,17 @@ const STORAGE_DIR =
     ? path.join(process.env.TMPDIR || "/tmp", "storage")
     : path.join(process.cwd(), "storage"));
 
-const isNetlify = process.env.NETLIFY === "true";
-const blobStore = isNetlify ? getStore("documents") : null;
+let cachedBlobStore: ReturnType<typeof getStore> | null | undefined;
+
+function getBlobStore() {
+  if (cachedBlobStore !== undefined) return cachedBlobStore;
+  if (process.env.NETLIFY !== "true" || !process.env.NETLIFY_BLOBS_CONTEXT) {
+    cachedBlobStore = null;
+    return cachedBlobStore;
+  }
+  cachedBlobStore = getStore("documents");
+  return cachedBlobStore;
+}
 
 export async function ensureStorageDir() {
   await mkdir(STORAGE_DIR, { recursive: true });
@@ -24,6 +33,7 @@ export function storagePathForKey(storageKey: string) {
 }
 
 export async function saveUploadedFile(storageKey: string, buffer: Buffer) {
+  const blobStore = getBlobStore();
   if (blobStore) {
     const bytes = Uint8Array.from(buffer);
     const blob = new Blob([bytes]);
@@ -38,6 +48,7 @@ export async function saveUploadedFile(storageKey: string, buffer: Buffer) {
 
 export async function getLocalPathForKey(storageKey: string) {
   const filePath = storagePathForKey(storageKey);
+  const blobStore = getBlobStore();
   if (!blobStore) {
     return filePath;
   }
