@@ -94,7 +94,8 @@ export default function JobStatusPage() {
       return (await res.json()) as JobStatusResponse;
     },
     enabled: Boolean(params.id),
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
+      const data = query.state.data as JobStatusResponse | undefined;
       if (!data) return 2000;
       return data.status === "ready" || data.status === "failed" ? false : 2000;
     }

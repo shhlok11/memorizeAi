@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { createEmbeddingsClient } from "@/lib/ai";
 import { assertEnv } from "@/lib/env";
-import { chunkPages, loadPdfPages } from "@/lib/ingest";
+import { chunkPages, loadPdfPages, type RawPage } from "@/lib/ingest";
 import { inngest } from "@/lib/inngest";
 import { prisma } from "@/lib/prisma";
 import { withRetries } from "@/lib/retry";
@@ -53,6 +53,10 @@ export const ingestDocument = inngest.createFunction(
       const pages = await step.run("extract-pages", async () => {
         return loadPdfPages(filePath);
       });
+      const normalizedPages: RawPage[] = pages.map((page) => ({
+        content: page.content ?? "",
+        pageNumber: page.pageNumber ?? null
+      }));
 
       await step.run("mark-chunking", async () => {
         await prisma.job.update({
@@ -62,7 +66,7 @@ export const ingestDocument = inngest.createFunction(
       });
 
       const chunks = await step.run("chunk-pages", async () => {
-        return chunkPages(pages);
+        return chunkPages(normalizedPages);
       });
 
       const existingHashes = await step.run("load-existing", async () => {

@@ -81,8 +81,8 @@ const statusProgression: Array<{
 }> = [
   { status: "queued", message: "Queued for processing...", log: "PDF uploaded" },
   { status: "extracting", message: "Extracting text from PDF...", log: "Text extraction started" },
-  { status: "summarizing", message: "Generating structured notes...", log: "OpenAI request sent" },
-  { status: "complete", message: "Processing complete!", log: "Notes generated" },
+  { status: "embedding", message: "Generating embeddings...", log: "Embedding request sent" },
+  { status: "ready", message: "Processing complete!", log: "Notes generated" },
 ];
 
 export default function JobStatus() {
@@ -110,14 +110,14 @@ export default function JobStatus() {
           id: `log_${currentStep}`,
           message: step.log,
           timestamp: new Date().toLocaleTimeString(),
-          status: step.status === "complete" ? "complete" : "active",
+          status: step.status === "ready" ? "complete" : "active",
         },
       ]);
 
       setCurrentStep((prev) => prev + 1);
 
       // Show results when complete
-      if (step.status === "complete") {
+      if (step.status === "ready") {
         setTimeout(() => setShowResults(true), 500);
       }
     }, 2000);
@@ -139,7 +139,7 @@ export default function JobStatus() {
   const currentStatus = hasFailed
     ? "failed"
     : currentStep >= statusProgression.length
-    ? "complete"
+    ? "ready"
     : statusProgression[currentStep]?.status || "queued";
 
   const statusMessage =
