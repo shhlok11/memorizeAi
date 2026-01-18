@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { createEmbeddingsClient } from "@/lib/ai";
 import { assertEnv } from "@/lib/env";
 import { chunkPages, loadPdfPages, type RawPage } from "@/lib/ingest";
@@ -135,12 +134,9 @@ export const ingestDocument = inngest.createFunction(
           });
 
           const vector = toPgVector(vectors[j]);
-          await prisma.$executeRaw(
-            Prisma.sql`
-              UPDATE "Chunk"
-              SET "embedding" = ${Prisma.raw(`'${vector}'::vector`)}
-              WHERE "id" = ${created.id}
-            `
+          await prisma.$executeRawUnsafe(
+            `UPDATE "Chunk" SET "embedding" = '${vector}'::vector WHERE "id" = $1`,
+            created.id
           );
         }
       }
