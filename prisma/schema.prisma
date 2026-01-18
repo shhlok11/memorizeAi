@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Document {
+  id               String   @id @default(uuid())
+  originalFileName String
+  storageKey       String
+  mimeType         String
+  sizeBytes        Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  jobs             Job[]
+  chunks           Chunk[]
+}
+
+model Job {
+  id           String    @id @default(uuid())
+  documentId   String
+  status       JobStatus
+  stage        JobStage
+  errorMessage String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  document     Document  @relation(fields: [documentId], references: [id])
+}
+
+model Chunk {
+  id          String   @id @default(uuid())
+  documentId  String
+  chunkIndex  Int
+  content     String
+  contentHash String
+  pageStart   Int?
+  pageEnd     Int?
+  embedding   Unsupported("vector")?
+  createdAt   DateTime @default(now())
+  document    Document @relation(fields: [documentId], references: [id])
+
+  @@unique([documentId, contentHash])
+  @@index([documentId])
+}
+
+enum JobStatus {
+  queued
+  processing
+  ready
+  failed
+}
+
+enum JobStage {
+  queued
+  extracting
+  chunking
+  embedding
+  ready
+  failed
+}

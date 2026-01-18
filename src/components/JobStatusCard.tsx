@@ -47,7 +47,7 @@ export function JobStatusCard({
       </div>
 
       {/* Progress Section */}
-      {!isFailed && status !== "complete" && (
+      {!isFailed && status !== "ready" && (
         <div className="mb-4">
           <ProgressBar indeterminate className="mb-2" />
           <p className="text-sm text-muted-foreground">{statusMessage}</p>

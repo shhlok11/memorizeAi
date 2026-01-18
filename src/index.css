@@ -55,8 +55,9 @@
     /* Status pill colors */
     --status-queued: 220 9% 46%;
     --status-extracting: 217 91% 60%;
-    --status-summarizing: 262 83% 58%;
-    --status-complete: 142 71% 45%;
+    --status-chunking: 195 85% 55%;
+    --status-embedding: 262 83% 58%;
+    --status-ready: 142 71% 45%;
     --status-failed: 0 84% 60%;
 
     /* Gradients */
@@ -150,11 +151,15 @@
     @apply bg-primary/10 text-primary;
   }
 
-  .status-summarizing {
+  .status-chunking {
+    @apply bg-cyan-500/10 text-cyan-600;
+  }
+
+  .status-embedding {
     @apply bg-accent/10 text-accent;
   }
 
-  .status-complete {
+  .status-ready {
     @apply bg-success/10 text-success;
   }
 

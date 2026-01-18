@@ -6,6 +6,10 @@ interface Flashcard {
   id: string;
   question: string;
   answer: string;
+  chunkId?: string;
+  pageStart?: number | null;
+  pageEnd?: number | null;
+  snippet?: string;
 }
 
 interface FlashcardsViewProps {
@@ -56,6 +60,14 @@ function FlashcardItem({ flashcard, index }: { flashcard: Flashcard; index: numb
               Answer
             </span>
             <p className="text-foreground leading-relaxed">{flashcard.answer}</p>
+            {flashcard.snippet ? (
+              <div className="mt-3 text-xs text-muted-foreground">
+                <p className="font-mono text-foreground">
+                  {flashcard.chunkId ?? "source"} (pages {flashcard.pageStart ?? "?"}-{flashcard.pageEnd ?? "?"})
+                </p>
+                <p className="mt-1">{flashcard.snippet}</p>
+              </div>
+            ) : null}
           </div>
         </div>
       </motion.div>
