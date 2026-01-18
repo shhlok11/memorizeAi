@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createChatClient, createEmbeddingsClient } from "@/lib/ai";
-import { assertEnv, env } from "@/lib/env";
+import { assertEnv, getEnv } from "@/lib/env";
 import { withRetries } from "@/lib/retry";
 import { toPgVector } from "@/lib/vector";
 
@@ -33,6 +33,7 @@ function normalizeText(text: string) {
 
 export async function retrieveChunks(documentId: string, query: string) {
   assertEnv();
+  const env = getEnv();
   const embeddings = createEmbeddingsClient();
   const queryEmbedding = await withRetries(
     () => embeddings.embedQuery(query),
@@ -60,6 +61,7 @@ function extractPageNumber(question: string) {
 }
 
 async function retrieveChunksForQuestion(documentId: string, question: string) {
+  const env = getEnv();
   const page = extractPageNumber(question);
   if (page !== null) {
     const rows = await prisma.$queryRaw<RetrievedChunk[]>(Prisma.sql`
@@ -168,6 +170,7 @@ Use only chunkId values provided in sources.`;
 
 export async function generateFlashcards(documentId: string, count = 6) {
   assertEnv();
+  const env = getEnv();
   const query = "key concepts, definitions, and important facts";
   const chunks = await retrieveChunks(documentId, query);
   if (!chunks.length) return [];

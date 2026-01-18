@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { env } from "@/lib/env";
+import { getEnv } from "@/lib/env";
 
 export type RawPage = {
   content: string;
@@ -30,6 +30,7 @@ export async function loadPdfPages(filePath: string): Promise<RawPage[]> {
 }
 
 export async function chunkPages(pages: RawPage[]): Promise<ChunkPayload[]> {
+  const env = getEnv();
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: env.chunkSize,
     chunkOverlap: env.chunkOverlap

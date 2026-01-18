@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { env } from "@/lib/env";
+import { getEnv } from "@/lib/env";
 import { inngest } from "@/lib/inngest";
 import { prisma } from "@/lib/prisma";
 import { saveUploadedFile, storageKeyForJob } from "@/lib/storage";
 
 export async function POST(request: Request) {
   try {
+    const env = getEnv();
     const formData = await request.formData();
     const file = formData.get("file");
 
